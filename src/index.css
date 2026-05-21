@@ -1,0 +1,162 @@
+/* C:\Users\thulp\.gemini\antigravity\scratch\sentence-surgeon\src\index.css */
+@import "tailwindcss";
+
+html, body, #root {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  user-select: none;
+  background-color: #f1f5f9;
+  font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+}
+
+/* ==================== HOSPITAL WHITE GLASSMORPHISM ==================== */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(20px) saturate(140%);
+  -webkit-backdrop-filter: blur(20px) saturate(140%);
+  border: 1px solid rgba(148, 163, 184, 0.3);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08), 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.glass-panel-pink {
+  background: rgba(253, 242, 248, 0.85);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(244, 63, 94, 0.25);
+  box-shadow: 0 8px 32px rgba(244, 63, 94, 0.08);
+}
+
+.glass-panel-skyblue {
+  background: rgba(240, 249, 255, 0.85);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(14, 165, 233, 0.25);
+  box-shadow: 0 8px 32px rgba(14, 165, 233, 0.08);
+}
+
+.glass-panel-green {
+  background: rgba(240, 253, 244, 0.85);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(34, 197, 94, 0.25);
+  box-shadow: 0 8px 32px rgba(34, 197, 94, 0.08);
+}
+
+/* Chrome metal effect for surgical tray */
+.chrome-metal {
+  background: linear-gradient(135deg, #ffffff 0%, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%, #ffffff 100%);
+  box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.9),
+              inset 0 -2px 4px rgba(0, 0, 0, 0.06),
+              0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+/* Neon glow classes */
+.glow-blue {
+  box-shadow: 0 0 15px rgba(14, 165, 233, 0.5), inset 0 0 8px rgba(14, 165, 233, 0.3);
+  text-shadow: 0 0 8px rgba(14, 165, 233, 0.6);
+}
+.glow-pink {
+  box-shadow: 0 0 15px rgba(244, 63, 94, 0.5), inset 0 0 8px rgba(244, 63, 94, 0.3);
+  text-shadow: 0 0 8px rgba(244, 63, 94, 0.6);
+}
+.glow-green {
+  box-shadow: 0 0 15px rgba(34, 197, 94, 0.5), inset 0 0 8px rgba(34, 197, 94, 0.3);
+  text-shadow: 0 0 8px rgba(34, 197, 94, 0.6);
+}
+.glow-orange {
+  box-shadow: 0 0 15px rgba(249, 115, 22, 0.5), inset 0 0 8px rgba(249, 115, 22, 0.3);
+  text-shadow: 0 0 8px rgba(249, 115, 22, 0.6);
+}
+
+/* Wound animation pulses */
+@keyframes pulse-red {
+  0%, 100% { transform: scale(1); opacity: 0.8; filter: drop-shadow(0 0 2px rgba(239, 68, 68, 0.8)); }
+  50% { transform: scale(1.15); opacity: 1; filter: drop-shadow(0 0 12px rgba(239, 68, 68, 1)); }
+}
+.pulse-wound-red { animation: pulse-red 1.5s infinite ease-in-out; }
+
+@keyframes pulse-orange {
+  0%, 100% { transform: scale(1); opacity: 0.7; filter: drop-shadow(0 0 2px rgba(249, 115, 22, 0.7)); }
+  50% { transform: scale(1.12); opacity: 1; filter: drop-shadow(0 0 10px rgba(249, 115, 22, 1)); }
+}
+.pulse-wound-orange { animation: pulse-orange 1.8s infinite ease-in-out; }
+
+/* Heartbeat line animation */
+@keyframes heartbeat-svg {
+  0% { stroke-dashoffset: 800; }
+  100% { stroke-dashoffset: 0; }
+}
+.heartbeat-line {
+  stroke-dasharray: 800;
+  stroke-dashoffset: 800;
+  animation: heartbeat-svg 4s linear infinite;
+}
+
+/* Custom Scrollbar (Hospital White) */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: rgba(241, 245, 249, 0.5); border-radius: 4px; }
+::-webkit-scrollbar-thumb { background: rgba(148, 163, 184, 0.4); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(148, 163, 184, 0.6); }
+
+/* Text Size scaling */
+.text-scale-small { font-size: 0.875rem; }
+.text-scale-medium { font-size: 1rem; }
+.text-scale-large { font-size: 1.15rem; }
+.text-scale-xlarge { font-size: 1.3rem; }
+
+/* Dynamic scan gradient */
+@keyframes scan-glow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+.scan-gradient {
+  background: linear-gradient(90deg, rgba(14, 165, 233, 0.08) 0%, rgba(244, 63, 94, 0.12) 50%, rgba(14, 165, 233, 0.08) 100%);
+  background-size: 200% 200%;
+  animation: scan-glow 4s ease infinite;
+}
+
+/* Scale-up entrance animation */
+@keyframes scale-up {
+  0% { transform: scale(0.85); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+.animate-scale-up { animation: scale-up 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+
+/* Fade-in animation */
+@keyframes fade-in {
+  0% { opacity: 0; transform: translateY(8px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-in { animation: fade-in 0.4s ease-out forwards; }
+
+/* Clipboard slide-up animation */
+@keyframes clipboard-slide {
+  0% { transform: translateY(100%) rotate(2deg); opacity: 0; }
+  60% { transform: translateY(-10px) rotate(-1deg); opacity: 1; }
+  100% { transform: translateY(0) rotate(0deg); opacity: 1; }
+}
+.animate-clipboard-slide { animation: clipboard-slide 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
+
+/* Custom Cursor styling based on active tool */
+.active-tool-scalpel, .active-tool-scalpel * {
+  cursor: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' style='font-size:32px'%3E%3Ctext y='32'%3E🔪%3C/text%3E%3C/svg%3E") 0 32, auto !important;
+}
+.active-tool-injector, .active-tool-injector * {
+  cursor: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' style='font-size:32px'%3E%3Ctext y='32'%3E💉%3C/text%3E%3C/svg%3E") 0 32, auto !important;
+}
+.active-tool-clamp, .active-tool-clamp * {
+  cursor: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' style='font-size:32px'%3E%3Ctext y='32'%3E🗜️%3C/text%3E%3C/svg%3E") 16 16, auto !important;
+}
+.active-tool-implant, .active-tool-implant * {
+  cursor: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' style='font-size:32px'%3E%3Ctext y='32'%3E💎%3C/text%3E%3C/svg%3E") 16 16, auto !important;
+}
+.active-tool-forceps, .active-tool-forceps * {
+  cursor: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' style='font-size:32px'%3E%3Ctext y='32'%3E🧲%3C/text%3E%3C/svg%3E") 16 16, auto !important;
+}
+
+/* Paper clipboard texture */
+.paper-texture {
+  background-color: #fefefe;
+  background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23e2e8f0' fill-opacity='0.15'%3E%3Crect x='0' y='0' width='40' height='1'/%3E%3Crect x='0' y='0' width='1' height='40'/%3E%3C/g%3E%3C/svg%3E");
+}
