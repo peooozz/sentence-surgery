@@ -240,5 +240,150 @@ export const storylines = {
     caseHistory: "Nellie's sentence is poisoned with TRIPLE negatives! 'I has not never seen no dinosaur' — three negatives canceling each other out! Emergency detoxification and verb agreement repair needed.",
     severity: "Critical",
     bloodType: "O-bject"
+  },
+  31: {
+    patientName: "Peter Prep",
+    age: 14,
+    diagnosis: "Colon Contamination & Serial Comma Absence",
+    caseHistory: "Peter was making a list of ingredients when he inserted an illegal colon after 'calls for' and lost all his list commas. The words are sticking together like wet flour.",
+    severity: "Advanced",
+    bloodType: "A+djective"
+  },
+  32: {
+    patientName: "Sammy Splice",
+    age: 15,
+    diagnosis: "Acute Comma Splice & Clause Rupture",
+    caseHistory: "Sammy connected two independent clauses with only a comma, causing a severe splice hemorrhage. Semicolon replacement is urgently required.",
+    severity: "Advanced",
+    bloodType: "O-bject"
+  },
+  33: {
+    patientName: "Wanda Wednesday",
+    age: 14,
+    diagnosis: "Spelling Pathology (Silent d & e-before-i)",
+    caseHistory: "Wanda wrote 'recieved' and 'Wenesday'. The silent 'd' in Wednesday and the spelling rules in received have collapsed, causing structural fever.",
+    severity: "Advanced",
+    bloodType: "B-Verb"
+  },
+  34: {
+    patientName: "Charlie Children",
+    age: 15,
+    diagnosis: "Possessive Apostrophe Dislocation & Unnecessary Comma",
+    caseHistory: "Charlie forgot the possessive apostrophe in 'childrens' and placed an unnecessary comma between the verb and adverb. The flow is choked.",
+    severity: "Advanced",
+    bloodType: "AB-stract"
+  },
+  35: {
+    patientName: "Debra Definite",
+    age: 14,
+    diagnosis: "Severe Spelling Infection & Contraction Shock",
+    caseHistory: "Debra is suffering from a double spelling infection and possessive contraction shock. She wrote 'Its definately... tommorrow' and has collapsed from grammar exhaustion.",
+    severity: "Advanced",
+    bloodType: "A+djective"
+  },
+  36: {
+    patientName: "Harry Him",
+    age: 15,
+    diagnosis: "Compound Subject Pronoun Case Fracture & Library Spelling Infection",
+    caseHistory: "Harry said 'Me and him went to the libary'. Both pronoun bones are fractured (object case in subject position) and 'library' is infected.",
+    severity: "Advanced",
+    bloodType: "O-bject"
+  },
+  37: {
+    patientName: "Priscilla Pronoun",
+    age: 16,
+    diagnosis: "Prepositional Object Pronoun Displacement & Collective Noun Mismatch",
+    caseHistory: "Priscilla wrote 'Between you and I' and used 'their' for singular committee. The pronoun case and collective agreement have failed.",
+    severity: "Expert",
+    bloodType: "B-Verb"
+  },
+  38: {
+    patientName: "Eric Everyone",
+    age: 15,
+    diagnosis: "Indefinite Pronoun Antecedent Rupture & Conjunctive Comma Blockage",
+    caseHistory: "Eric mixed singular 'everyone' with plural 'their' and forgot a comma after the conjunctive adverb 'however'. Emergency grammar support is needed.",
+    severity: "Expert",
+    bloodType: "AB-stract"
+  },
+  39: {
+    patientName: "Hector Hearsay",
+    age: 16,
+    diagnosis: "Compound Pronoun Case Trauma & Homophone Fracture",
+    caseHistory: "Hector said 'Him and me was talking about who's book'. Multiple pronoun case fractures, a subject-verb agreement leak, and a who's/whose homophone fracture.",
+    severity: "Expert",
+    bloodType: "A+djective"
+  },
+  40: {
+    patientName: "Gaby Government",
+    age: 16,
+    diagnosis: "Triple Spelling Pathogen & Contraction Failure",
+    caseHistory: "Gaby wrote 'goverment', 'responsability', and 'enviroment'. Her spelling module is in critical failure, and 'its' is missing an apostrophe.",
+    severity: "Expert",
+    bloodType: "O-bject"
+  },
+  41: {
+    patientName: "Sarah Singer",
+    age: 15,
+    diagnosis: "Past Tense Verb Dislocation & Double Adverb Spelling Infection",
+    caseHistory: "Sarah sung 'beautifuly' at the 'rehersal'. Simple past tense of sing is dislocated and spelling of beautifully and rehearsal are infected.",
+    severity: "Expert",
+    bloodType: "B-Verb"
+  },
+  42: {
+    patientName: "Paula Principle",
+    age: 16,
+    diagnosis: "Principal Homophone Confusion & Plural Agreement Seizure",
+    caseHistory: "Paula confused principle/principal, teachers/was plural agreement, and misspelled occurrence. Multi-system grammatical failure.",
+    severity: "Expert",
+    bloodType: "AB-stract"
+  },
+  43: {
+    patientName: "Billy Boy",
+    age: 16,
+    diagnosis: "Multi-Error Trauma: Pronoun Case, Double Negative & Participle Rupture",
+    caseHistory: "Billy is in critical condition! He wrote 'the boy which dont never... has went'. 6 separate grammar wounds are bleeding out.",
+    severity: "Critical",
+    bloodType: "A+djective"
+  },
+  44: {
+    patientName: "Graham Grammar",
+    age: 17,
+    diagnosis: "Quadruple Spelling Infection & Agreement Collapse",
+    caseHistory: "Graham has a massive spelling infection (alot, beleive, grammer, speach) and subject-verb agreement collapse. Sentence is barely breathing.",
+    severity: "Critical",
+    bloodType: "O-bject"
+  },
+  45: {
+    patientName: "Haley Her",
+    age: 16,
+    diagnosis: "Compound Subject Pronoun Fracture & Homophone Infection",
+    caseHistory: "Haley wrote 'her and me seen... who were running threw... forrest'. Multi-system failure affecting pronouns, tenses, homophones, and agreements.",
+    severity: "Critical",
+    bloodType: "B-Verb"
+  },
+  46: {
+    patientName: "Professor Pat",
+    age: 17,
+    diagnosis: "professor Spelling Sepsis & Participle Dislocation",
+    caseHistory: "Professor Pat misspelled four words and used the past tense 'ran' instead of participle 'run' after 'has'. Severe grammar sepsis.",
+    severity: "Critical",
+    bloodType: "AB-stract"
+  },
+  47: {
+    patientName: "Clement Committee",
+    age: 16,
+    diagnosis: "Collective Agreement Fracture & Five-Word Spelling Infection",
+    caseHistory: "Clement has a collective agreement fracture (committee have) and misspelled committee, recommended, government, address, immediately. Intensive care needed.",
+    severity: "Critical",
+    bloodType: "A+djective"
+  },
+  48: {
+    patientName: "Ulysses Ultimate",
+    age: 17,
+    diagnosis: "Subjunctive Pronoun Collapse & Double Spelling Infection",
+    caseHistory: "Ulysses represents the ultimate surgeon challenge: contraction, pronoun case, agreement, homophone, and double spelling wounds. CODE BLACK!",
+    severity: "Critical",
+    bloodType: "O-bject"
   }
 };
+

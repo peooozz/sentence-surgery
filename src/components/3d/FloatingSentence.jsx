@@ -5,7 +5,7 @@ import * as THREE from "three";
 import { useGame } from "../GameProvider";
 
 // Laser Sight Line from ceiling to a word position
-function LaserSight({ targetX }) {
+function LaserSight({ targetX, color }) {
   const points = useMemo(() => [
     [targetX, 5.0, 0],
     [targetX, 0, 0]
@@ -14,10 +14,10 @@ function LaserSight({ targetX }) {
   return (
     <Line
       points={points}
-      color="#ef4444"
-      lineWidth={1.5}
+      color={color || "#ef4444"}
+      lineWidth={2.0}
       transparent
-      opacity={0.5}
+      opacity={0.6}
     />
   );
 }
@@ -31,9 +31,8 @@ function FloatingStatus({ x, text, color, scale = 1.0 }) {
     if (!startTime.current) startTime.current = clock.getElapsedTime();
     const elapsed = clock.getElapsedTime() - startTime.current;
     if (groupRef.current) {
-      groupRef.current.position.y = (0.55 * scale) + elapsed * 0.3;
-      // Fade out by scaling down
-      const currentScale = Math.max(0.01, 1 - elapsed * 0.4) * scale;
+      groupRef.current.position.y = (0.55 * scale) + elapsed * 0.35;
+      const currentScale = Math.max(0.01, 1 - elapsed * 0.45) * scale;
       groupRef.current.scale.set(currentScale, currentScale, currentScale);
     }
   });
@@ -41,7 +40,7 @@ function FloatingStatus({ x, text, color, scale = 1.0 }) {
   return (
     <group ref={groupRef} position={[x, 0.55 * scale, 0.3]}>
       <Text
-        fontSize={0.15 * scale}
+        fontSize={0.16 * scale}
         color={color}
         anchorX="center"
         anchorY="middle"
@@ -61,7 +60,7 @@ function SutureJoint({ x1, x2, y, scale = 1.0 }) {
   useFrame(({ clock }) => {
     if (meshRef.current) {
       const t = clock.getElapsedTime();
-      meshRef.current.material.emissiveIntensity = 0.5 + Math.sin(t * 3) * 0.3;
+      meshRef.current.material.emissiveIntensity = 0.6 + Math.sin(t * 4) * 0.3;
     }
   });
 
@@ -71,9 +70,9 @@ function SutureJoint({ x1, x2, y, scale = 1.0 }) {
       <meshStandardMaterial
         color="#22c55e"
         emissive="#22c55e"
-        emissiveIntensity={0.5}
+        emissiveIntensity={0.6}
         transparent
-        opacity={0.6}
+        opacity={0.7}
       />
     </mesh>
   );
@@ -83,7 +82,10 @@ export default function FloatingSentence({
   onOpenScalpel, 
   onOpenInjector, 
   onOpenImplant,
-  onOpenClampSelector
+  onOpenClampSelector,
+  onOpenScissors,
+  onOpenScanner,
+  onOpenTweezers
 }) {
   const { 
     currentWords, 
@@ -145,7 +147,7 @@ export default function FloatingSentence({
     // 3. Apostrophe Implant
     else if (activeTool === "implant") {
       if (word.errorType === "apostrophe") {
-        showStatus(xPos, "IMPLANTING...", "#a855f7");
+        showStatus(xPos, "IMPLANTING...", "#d946ef");
         onOpenImplant(idx, word);
       } else {
         applyToolFix(idx, "implant", "");
@@ -169,7 +171,7 @@ export default function FloatingSentence({
         const agreementWordIdx = firstWord.errorType === "agreement" ? firstIdx : (secondWord.errorType === "agreement" ? idx : null);
         
         if (agreementWordIdx !== null) {
-          showStatus(xPos, "ALIGNING...", "#10b981");
+          showStatus(xPos, "ALIGNING...", "#22c55e");
           onOpenClampSelector(agreementWordIdx, currentWords[agreementWordIdx]);
         } else {
           applyToolFix(idx, "clamp", "");
@@ -199,6 +201,36 @@ export default function FloatingSentence({
         }
       }
     }
+
+    // 6. Comma Scissors
+    else if (activeTool === "scissors") {
+      if (word.errorType === "comma") {
+        showStatus(xPos, "CUTTING...", "#ec4899");
+        onOpenScissors(idx, word);
+      } else {
+        applyToolFix(idx, "scissors", "");
+      }
+    }
+
+    // 7. Spell Scanner
+    else if (activeTool === "scanner") {
+      if (word.errorType === "spelling") {
+        showStatus(xPos, "SCANNING...", "#8b5cf6");
+        onOpenScanner(idx, word);
+      } else {
+        applyToolFix(idx, "scanner", "");
+      }
+    }
+
+    // 8. Pronoun Tweezers
+    else if (activeTool === "tweezers") {
+      if (word.errorType === "pronoun") {
+        showStatus(xPos, "PLUCKING...", "#eab308");
+        onOpenTweezers(idx, word);
+      } else {
+        applyToolFix(idx, "tweezers", "");
+      }
+    }
   };
 
   // Find suture pairs (consecutive fixed words)
@@ -213,11 +245,26 @@ export default function FloatingSentence({
     }
   }
 
+  // Get active laser color based on selected tool
+  const getLaserColor = () => {
+    switch (activeTool) {
+      case "scalpel": return "#ef4444";
+      case "injector": return "#0ea5e9";
+      case "implant": return "#d946ef";
+      case "clamp": return "#22c55e";
+      case "forceps": return "#f59e0b";
+      case "scissors": return "#ec4899";
+      case "scanner": return "#8b5cf6";
+      case "tweezers": return "#eab308";
+      default: return "#ef4444";
+    }
+  };
+
   return (
     <group position={[0, 2.3, 0]}>
       {/* Laser Sight on hovered word */}
       {hoveredIdx !== null && activeTool && (
-        <LaserSight targetX={startX + hoveredIdx * spacing} />
+        <LaserSight targetX={startX + hoveredIdx * spacing} color={getLaserColor()} />
       )}
 
       {/* Suture joints between healed words */}
@@ -225,7 +272,7 @@ export default function FloatingSentence({
         <SutureJoint key={`suture-${idx}`} x1={pair.x1} x2={pair.x2} y={pair.y} scale={scale} />
       ))}
 
-      {/* Floating operation status text effects */}
+      {/* Floating status text */}
       {statusEffects.map(effect => (
         <FloatingStatus key={effect.id} x={effect.x} text={effect.text} color={effect.color} scale={scale} />
       ))}
@@ -236,33 +283,62 @@ export default function FloatingSentence({
         const isForcepsSelected = forcepsSelectedIdx === idx;
         const isClampedSelected = clampedWordIdx === idx;
 
-        // Visual properties — hospital white blocks
-        // Clinical medical color palette for word diagnosis
-        let blockColor = "#e0f2fe";       // Sterile sky-blue for healthy words
-        let emissiveColor = "#0284c7";    // Sky blue glow
-        let glowIntensity = 0.35;
+        // Visual properties - Comic Block Style
+        let blockColor = "#f1f5f9";       
+        let emissiveColor = "#475569";    
+        let glowIntensity = 0.2;
 
         if (word.isFixed) {
-          blockColor = "#dcfce7";         // Stable healed green
-          emissiveColor = "#16a34a";      // Emerald glow
-          glowIntensity = 0.7;
-        } else if (word.errorActive) {
-          blockColor = "#fee2e2";         // Injured warning red
-          emissiveColor = "#e11d48";      // Rose glow
+          blockColor = "#dcfce7";         
+          emissiveColor = "#22c55e";      
           glowIntensity = 0.8;
+        } else if (word.errorActive) {
+          // Color-code based on error type
+          if (word.errorType === "punctuation") {
+            blockColor = "#ffe4e6";
+            emissiveColor = "#f43f5e";
+          } else if (word.errorType === "tense") {
+            blockColor = "#e0f2fe";
+            emissiveColor = "#0ea5e9";
+          } else if (word.errorType === "agreement") {
+            blockColor = "#dcfce7";
+            emissiveColor = "#22c55e";
+          } else if (word.errorType === "apostrophe") {
+            blockColor = "#fae8ff";
+            emissiveColor = "#d946ef";
+          } else if (word.errorType === "comma") {
+            blockColor = "#fce7f3";
+            emissiveColor = "#ec4899";
+          } else if (word.errorType === "spelling") {
+            blockColor = "#ede9fe";
+            emissiveColor = "#8b5cf6";
+          } else if (word.errorType === "pronoun") {
+            blockColor = "#fef9c3";
+            emissiveColor = "#eab308";
+          } else {
+            blockColor = "#fee2e2";
+            emissiveColor = "#ef4444";
+          }
+          glowIntensity = 0.9;
         } else if (isForcepsSelected) {
-          emissiveColor = "#eab308";      // Amber forceps highlight
+          emissiveColor = "#f59e0b";      
           glowIntensity = 1.5;
         } else if (isClampedSelected) {
-          emissiveColor = "#22c55e";      // Clamp align highlight
+          emissiveColor = "#22c55e";      
           glowIntensity = 1.5;
         }
 
         return (
           <group key={word.id} position={[xPos, 0, 0]}>
+            {/* Comic Outline Mesh */}
+            <mesh position={[0, 0, 0]} scale={isHovered ? [1.13, 1.13, 1.13] : [1.06, 1.06, 1.06]}>
+              <boxGeometry args={[blockWidth, blockHeight, blockDepth]} />
+              <meshBasicMaterial color="#000000" side={THREE.BackSide} />
+            </mesh>
+
             {/* 3D Word Block */}
             <mesh 
-              scale={isHovered ? 1.08 : 1.0}
+              scale={isHovered ? 1.06 : 1.0}
               onPointerOver={(e) => {
                 e.stopPropagation();
                 setHoveredIdx(idx);
@@ -279,12 +355,10 @@ export default function FloatingSentence({
               <boxGeometry args={[blockWidth, blockHeight, blockDepth]} />
               <meshStandardMaterial 
                 color={blockColor} 
-                roughness={0.15} 
-                metalness={0.3} 
+                roughness={0.2} 
+                metalness={0.1} 
                 emissive={emissiveColor}
                 emissiveIntensity={glowIntensity}
-                transparent={true}
-                opacity={0.95}
               />
             </mesh>
 
@@ -292,7 +366,7 @@ export default function FloatingSentence({
             <Text
               position={[0, 0, blockDepth / 2 + 0.02]}
               fontSize={0.24 * scale}
-              color={word.isFixed ? "#166534" : "#1e293b"}
+              color="#000000"
               anchorX="center"
               anchorY="middle"
               depthOffset={1.5}
@@ -302,13 +376,21 @@ export default function FloatingSentence({
 
             {/* Error wireframe overlay */}
             {word.errorActive && (
-              <mesh position={[0, 0, 0]} scale={1.04}>
-                <boxGeometry args={[blockWidth + 0.06 * scale, blockHeight + 0.06 * scale, blockDepth + 0.02 * scale]} />
+              <mesh position={[0, 0, 0]} scale={1.05}>
+                <boxGeometry args={[blockWidth + 0.04 * scale, blockHeight + 0.04 * scale, blockDepth + 0.01 * scale]} />
                 <meshBasicMaterial 
-                  color={word.errorType === "punctuation" || word.errorType === "tense" ? "#ef4444" : "#f97316"} 
+                  color={
+                    word.errorType === "punctuation" ? "#ef4444" : 
+                    word.errorType === "tense" ? "#0ea5e9" :
+                    word.errorType === "agreement" ? "#22c55e" :
+                    word.errorType === "apostrophe" ? "#d946ef" :
+                    word.errorType === "comma" ? "#ec4899" :
+                    word.errorType === "spelling" ? "#8b5cf6" :
+                    word.errorType === "pronoun" ? "#eab308" : "#ef4444"
+                  } 
                   wireframe={true} 
                   transparent={true} 
-                  opacity={0.3} 
+                  opacity={0.5} 
                 />
               </mesh>
             )}
@@ -317,7 +399,7 @@ export default function FloatingSentence({
             {word.isFixed && (
               <mesh position={[0, 0, 0]} rotation={[Math.PI / 2, 0, 0]}>
                 <torusGeometry args={[0.7 * scale, 0.015 * scale, 8, 32]} />
-                <meshBasicMaterial color="#22c55e" transparent opacity={0.25} />
+                <meshBasicMaterial color="#22c55e" transparent opacity={0.35} />
               </mesh>
             )}
           </group>

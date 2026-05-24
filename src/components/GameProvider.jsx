@@ -10,7 +10,10 @@ const RANKS = [
   { name: "Junior Doctor", minXp: 200, skin: "Space Hospital" },
   { name: "Senior Doctor", minXp: 500, skin: "Underwater Hospital" },
   { name: "Consultant", minXp: 900, skin: "Jungle Hospital" },
-  { name: "Surgeon General", minXp: 1400, skin: "Robot Hospital" }
+  { name: "Surgeon General", minXp: 1400, skin: "Robot Hospital" },
+  { name: "Advanced Surgeon", minXp: 2000, skin: "Standard Hospital" },
+  { name: "Expert Clinician", minXp: 2700, skin: "Space Hospital" },
+  { name: "Surgeon General Supreme", minXp: 3500, skin: "Robot Hospital" }
 ];
 
 const TROPHY_LIST = [
@@ -27,6 +30,9 @@ const TROPHY_LIST = [
   { id: "modifier", name: "Modifier Realignment", description: "Untangled a dangling modifier in a complex sentence.", icon: "🩻", concept: "Dangling Modifiers" },
   { id: "preposition", name: "Prepositional Precision", description: "Repaired pronoun case after a preposition (between you and me).", icon: "⚖️", concept: "Prepositions" },
   { id: "relative", name: "Relative Clause Mender", description: "Corrected a who/which/that relative pronoun wound.", icon: "🧬", concept: "Relative Pronouns" },
+  { id: "comma_scissors", name: "Comma Clipper", description: "Successfully resolved list commas or run-on splices.", icon: "✂️", concept: "Commas" },
+  { id: "spell_scanner", name: "Orthography Specialist", description: "Diagnosed and cured spelling pathogens.", icon: "🔬", concept: "Spelling" },
+  { id: "pronoun_tweezers", name: "Case Aligner", description: "Repaired pronoun case errors (e.g. him vs he).", icon: "🪡", concept: "Pronouns" },
   { id: "speed_demon", name: "Speed Demon", description: "Discharged a patient in less than 20 seconds!", icon: "⚡", concept: "Speed" },
   { id: "flawless", name: "Flawless Procedure", description: "Discharged a patient with zero errors made.", icon: "🌟", concept: "Accuracy" }
 ];
@@ -186,37 +192,131 @@ export function GameProvider({ children }) {
     let success = false;
     let explanationText = "";
 
-    // Punctuation Scalpel
+    const norm = (s) => s.trim().toLowerCase();
+    const stripPunct = (s) => s.replace(/[.,!?;:'"—\-]+$/, "").trim().toLowerCase();
+
+    // ── SCALPEL: Punctuation and Capitalisation ─────────────────────────
     if (toolName === "scalpel" && targetWord.errorType === "punctuation") {
-      if (value.toLowerCase() === targetWord.correct.toLowerCase()) {
-        success = true;
-        targetWord.currentText = targetWord.correct;
-      }
       explanationText = targetWord.explanation;
+
+      // Check if correct string needs capitalisation
+      const correctCapitalized = targetWord.correct.charAt(0) === targetWord.correct.charAt(0).toUpperCase() && 
+                                 /[a-zA-Z]/.test(targetWord.correct.charAt(0));
+      
+      const currentCapitalized = targetWord.currentText.charAt(0) === targetWord.currentText.charAt(0).toUpperCase() && 
+                                 /[a-zA-Z]/.test(targetWord.currentText.charAt(0));
+
+      const needsCapitalization = correctCapitalized && !currentCapitalized;
+
+      // Option: capitalize selected
+      const isCapitalizeAction = value === (targetWord.currentText.charAt(0).toUpperCase() + targetWord.currentText.slice(1));
+      const isLowercaseAction = value === (targetWord.currentText.charAt(0).toLowerCase() + targetWord.currentText.slice(1));
+
+      if (needsCapitalization) {
+        if (isCapitalizeAction) {
+          const updatedText = value; 
+          
+          // Check if it also needs punctuation at the end
+          const correctEndPunct = targetWord.correct.replace(/^[a-zA-Z']+/, "");
+          const currentEndPunct = updatedText.replace(/^[a-zA-Z']+/, "");
+          
+          if (correctEndPunct === currentEndPunct || norm(updatedText) === norm(targetWord.correct)) {
+            success = true;
+            targetWord.currentText = targetWord.correct;
+          } else {
+            // Capitalized successfully but lacks trailing punctuation
+            targetWord.currentText = updatedText;
+            setCurrentWords(updatedWords);
+            synthAudio.playSuccess();
+            setShowExplanation({
+              isSuccess: true,
+              text: "Capitalization fixed! Now add the ending punctuation."
+            });
+            return;
+          }
+        } else if (isLowercaseAction) {
+          success = false;
+        } else if (value.length === 1 && [".", ",", "!", "?", ";", ":", "\""].includes(value)) {
+          // Added punctuation first
+          const updatedText = targetWord.currentText.replace(/[.,!?;:'"—\-]+$/, "") + value;
+          targetWord.currentText = updatedText;
+          setCurrentWords(updatedWords);
+          synthAudio.playSuccess();
+          setShowExplanation({
+            isSuccess: true,
+            text: "Punctuation added! Now make sure the word is capitalized."
+          });
+          return;
+        }
+      } else {
+        // No capitalization needed, only trailing punctuation
+        if (value === "") {
+          const stripped = targetWord.currentText.replace(/[.,!?;:'"—\-]+$/, "");
+          if (norm(stripped) === norm(targetWord.correct)) {
+            success = true;
+            targetWord.currentText = targetWord.correct;
+          }
+        } else if (value.length === 1 && [".", ",", "!", "?", ";", ":", "\""].includes(value)) {
+          const appended = targetWord.currentText.replace(/[.,!?;:'"—\-]+$/, "") + value;
+          if (norm(appended) === norm(targetWord.correct)) {
+            success = true;
+            targetWord.currentText = targetWord.correct;
+          }
+        } else if (norm(value) === norm(targetWord.correct)) {
+          success = true;
+          targetWord.currentText = targetWord.correct;
+        }
+      }
     }
 
-    // Tense Injector
+    // ── TENSE INJECTOR ─────────────────────────────────────────────────
     else if (toolName === "injector" && targetWord.errorType === "tense") {
-      if (value.toLowerCase() === targetWord.correct.toLowerCase()) {
+      if (norm(value) === norm(targetWord.correct)) {
         success = true;
         targetWord.currentText = targetWord.correct;
       }
       explanationText = targetWord.explanation;
     }
 
-    // Agreement Clamp
-    // The value will contain the matching word index or the correct verb form
+    // ── AGREEMENT CLAMP ────────────────────────────────────────────────
     else if (toolName === "clamp" && targetWord.errorType === "agreement") {
-      if (value.toLowerCase() === targetWord.correct.toLowerCase()) {
+      if (norm(value) === norm(targetWord.correct)) {
         success = true;
         targetWord.currentText = targetWord.correct;
       }
       explanationText = targetWord.explanation;
     }
 
-    // Apostrophe Implant
+    // ── APOSTROPHE IMPLANT ────────────────────────────────────────────
     else if (toolName === "implant" && targetWord.errorType === "apostrophe") {
-      if (value.toLowerCase() === targetWord.correct.toLowerCase()) {
+      if (norm(value) === norm(targetWord.correct)) {
+        success = true;
+        targetWord.currentText = targetWord.correct;
+      }
+      explanationText = targetWord.explanation;
+    }
+
+    // ── COMMA SCISSORS ────────────────────────────────────────────────
+    else if (toolName === "scissors" && targetWord.errorType === "comma") {
+      if (norm(value) === norm(targetWord.correct)) {
+        success = true;
+        targetWord.currentText = targetWord.correct;
+      }
+      explanationText = targetWord.explanation;
+    }
+
+    // ── SPELL SCANNER ──────────────────────────────────────────────────
+    else if (toolName === "scanner" && targetWord.errorType === "spelling") {
+      if (norm(value) === norm(targetWord.correct)) {
+        success = true;
+        targetWord.currentText = targetWord.correct;
+      }
+      explanationText = targetWord.explanation;
+    }
+
+    // ── PRONOUN TWEEZERS ───────────────────────────────────────────────
+    else if (toolName === "tweezers" && targetWord.errorType === "pronoun") {
+      if (norm(value) === norm(targetWord.correct)) {
         success = true;
         targetWord.currentText = targetWord.correct;
       }
@@ -352,6 +452,15 @@ export function GameProvider({ children }) {
     if (toolName === "implant" && word.errorType !== "apostrophe") {
       return "Incorrect tool! The Apostrophe Implant is for words missing apostrophes.";
     }
+    if (toolName === "scissors" && word.errorType !== "comma") {
+      return "Incorrect tool! Comma Scissors should only be used to snip or replace comma wounds.";
+    }
+    if (toolName === "scanner" && word.errorType !== "spelling") {
+      return "Incorrect tool! Use the Spell Scanner to clean up spelling infections.";
+    }
+    if (toolName === "tweezers" && word.errorType !== "pronoun") {
+      return "Incorrect tool! Use the Pronoun Tweezers to pluck incorrect pronouns.";
+    }
 
     // Dynamic detailed hint for incorrect answers
     return word.hint || "Oops! That injection was rejected. Try reading the sentence again.";
@@ -369,6 +478,12 @@ export function GameProvider({ children }) {
     } else if (errorType === "tense") {
       unlockTrophy("tense_surgeon");
       unlockTrophy("participle");
+    } else if (errorType === "comma") {
+      unlockTrophy("comma_scissors");
+    } else if (errorType === "spelling") {
+      unlockTrophy("spell_scanner");
+    } else if (errorType === "pronoun") {
+      unlockTrophy("pronoun_tweezers");
     }
   };
 

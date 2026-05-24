@@ -7,41 +7,65 @@ const TOOLS = [
     id: "scalpel",
     name: "Punctuation Scalpel",
     icon: "🔪",
-    gradient: "from-rose-400 to-rose-600",
-    activeBorder: "border-rose-400 shadow-[0_0_20px_rgba(244,63,94,0.4)]",
+    colorClass: "bg-rose-500",
+    activeClass: "bg-rose-100 border-rose-600 shadow-[0_0_15px_rgba(244,63,94,0.6)]",
     description: "Fix starting capitalization and missing ending punctuation."
   },
   {
     id: "injector",
     name: "Tense Injector",
     icon: "💉",
-    gradient: "from-sky-400 to-sky-600",
-    activeBorder: "border-sky-400 shadow-[0_0_20px_rgba(14,165,233,0.4)]",
-    description: "Inject tense serum to repair faulty verb forms."
+    colorClass: "bg-sky-500",
+    activeClass: "bg-sky-100 border-sky-600 shadow-[0_0_15px_rgba(14,165,233,0.6)]",
+    description: "Inject tense serum to repair faulty verb conjugations."
   },
   {
     id: "clamp",
     name: "Agreement Clamp",
     icon: "🗜️",
-    gradient: "from-emerald-400 to-emerald-600",
-    activeBorder: "border-emerald-400 shadow-[0_0_20px_rgba(16,185,129,0.4)]",
-    description: "Align mismatched subjects and verbs."
+    colorClass: "bg-emerald-500",
+    activeClass: "bg-emerald-100 border-emerald-600 shadow-[0_0_15px_rgba(34,197,94,0.6)]",
+    description: "Clamp down on subject-verb agreement mismatches."
   },
   {
     id: "implant",
     name: "Apostrophe Implant",
     icon: "💎",
-    gradient: "from-purple-400 to-purple-600",
-    activeBorder: "border-purple-400 shadow-[0_0_20px_rgba(168,85,247,0.4)]",
+    colorClass: "bg-fuchsia-500",
+    activeClass: "bg-fuchsia-100 border-fuchsia-600 shadow-[0_0_15px_rgba(217,70,239,0.6)]",
     description: "Implant contraction or possession apostrophes."
   },
   {
     id: "forceps",
     name: "Word Order Forceps",
     icon: "🧲",
-    gradient: "from-amber-400 to-amber-600",
-    activeBorder: "border-amber-400 shadow-[0_0_20px_rgba(245,158,11,0.4)]",
-    description: "Swap and rearrange scrambled words."
+    colorClass: "bg-amber-500",
+    activeClass: "bg-amber-100 border-amber-600 shadow-[0_0_15px_rgba(245,158,11,0.6)]",
+    description: "Swap and rearrange scrambled word structures."
+  },
+  {
+    id: "scissors",
+    name: "Comma Scissors",
+    icon: "✂️",
+    colorClass: "bg-pink-500",
+    activeClass: "bg-pink-100 border-pink-600 shadow-[0_0_15px_rgba(236,72,153,0.6)]",
+    description: "Add, remove, or replace commas to fix run-on splice wounds."
+  },
+  {
+    id: "scanner",
+    name: "Spell Scanner",
+    icon: "🔬",
+    colorClass: "bg-violet-500",
+    activeClass: "bg-violet-100 border-violet-600 shadow-[0_0_15px_rgba(139,92,246,0.6)]",
+    description: "Scan and resolve deep spelling infections with alternates."
+  },
+  {
+    id: "tweezers",
+    name: "Pronoun Tweezers",
+    icon: "🪡",
+    colorClass: "bg-yellow-500",
+    activeClass: "bg-yellow-100 border-yellow-600 shadow-[0_0_15px_rgba(234,179,8,0.6)]",
+    description: "Extract and align correct pronoun cases (he/him, they/them, there/their)."
   }
 ];
 
@@ -58,44 +82,43 @@ export default function SurgicalTray() {
   };
 
   return (
-    <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 max-w-4xl w-full px-6 pointer-events-none">
-      {/* Surgical Tray - Hospital White Chrome */}
-      <div className="chrome-metal p-3 rounded-[32px] pointer-events-auto flex items-center justify-between border-2 border-slate-200 shadow-[0_15px_40px_rgba(0,0,0,0.1)] relative">
-        {/* Tray inner glow panel */}
-        <div className="absolute inset-1.5 border border-slate-100 rounded-[26px] pointer-events-none"></div>
+    <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-40 max-w-4xl w-full px-4 pointer-events-none">
+      {/* Surgical Tray - Comic Panel Style */}
+      <div className="bg-white border-4 border-black p-3 rounded-2xl pointer-events-auto flex items-center justify-between shadow-[8px_8px_0px_#000000] relative">
+        
+        {/* Decorative Halftone Strip */}
+        <div className="absolute inset-0 bg-[radial-gradient(rgba(0,0,0,0.04)_12%,transparent_13%)] bg-[size:10px_10px] pointer-events-none rounded-xl"></div>
 
-        {/* Tools row */}
-        <div className="flex justify-around items-center w-full gap-4 py-1.5 z-10 px-3">
+        {/* Tools Grid */}
+        <div className="grid grid-cols-8 gap-3 py-1 w-full z-10 px-1">
           {TOOLS.map((tool) => {
             const isSelected = activeTool === tool.id;
             return (
               <button
                 key={tool.id}
                 onClick={() => handleSelectTool(tool.id)}
-                className={`flex-1 max-w-[145px] h-24 rounded-2xl relative flex flex-col items-center justify-center transition-all duration-300 group cursor-pointer border-2 ${
+                className={`h-22 rounded-xl relative flex flex-col items-center justify-center transition-all duration-200 group cursor-pointer border-3 border-black ${
                   isSelected
-                    ? `bg-white -translate-y-6 shadow-2xl ${tool.activeBorder}`
-                    : "bg-white/80 border-slate-200 hover:bg-white hover:border-slate-300 hover:-translate-y-2 shadow-md"
+                    ? `${tool.activeClass} -translate-y-4 shadow-[4px_4px_0px_#000000]`
+                    : "bg-white border-black hover:bg-slate-100 hover:-translate-y-1.5 shadow-[3px_3px_0px_#000000]"
                 }`}
               >
-                {/* 3D-like float effect background bubble */}
-                <div className={`w-12 h-12 rounded-full bg-gradient-to-br ${tool.gradient} flex items-center justify-center shadow-lg transition-transform duration-300 group-hover:scale-110 mb-2`}>
-                  <span className="text-xl select-none text-white">{tool.icon}</span>
+                {/* 3D-like icon bubble */}
+                <div className={`w-10 h-10 rounded-full ${tool.colorClass} border-2 border-black flex items-center justify-center shadow-[2px_2px_0px_#000000] transition-transform duration-200 group-hover:scale-110 mb-1`}>
+                  <span className="text-lg select-none text-white">{tool.icon}</span>
                 </div>
 
-                <span className={`text-[11px] font-black text-center select-none uppercase tracking-wider ${
-                  isSelected ? "text-slate-800" : "text-slate-500 group-hover:text-slate-700"
-                }`}>
+                <span className="text-[10px] font-black text-center select-none uppercase tracking-wider text-black">
                   {tool.id}
                 </span>
 
-                {/* Tool descriptions tooltip on hover */}
-                <div className="absolute bottom-28 bg-white border-2 border-slate-200 p-4 rounded-2xl text-slate-700 w-60 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-200 shadow-xl text-left left-1/2 -translate-x-1/2 text-xs leading-relaxed">
-                  <p className="font-extrabold text-rose-600 mb-1 flex items-center gap-1.5">
+                {/* Tool descriptions tooltip as a word bubble */}
+                <div className="absolute bottom-26 bg-yellow-100 border-3 border-black p-3.5 rounded-xl text-black w-56 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-200 shadow-[5px_5px_0px_#000000] text-left left-1/2 -translate-x-1/2 text-[11px] leading-snug comic-text z-50">
+                  <p className="font-extrabold text-black mb-1 flex items-center gap-1.5 text-xs">
                     <span>{tool.icon}</span>
-                    <span>{tool.name}</span>
+                    <span className="underline decoration-yellow-500 decoration-3">{tool.name}</span>
                   </p>
-                  <p className="text-slate-500 font-semibold">{tool.description}</p>
+                  <p className="font-medium text-slate-800">{tool.description}</p>
                 </div>
               </button>
             );

@@ -70,74 +70,12 @@ export const synthAudio = {
 
   // Heart rate monitor beep
   playHeartBeep(isFast = false, isFlatline = false) {
-    try {
-      const ctx = getAudioContext();
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-
-      if (isFlatline) {
-        // Flatline warning tone
-        osc.type = "sine";
-        osc.frequency.setValueAtTime(440, ctx.currentTime);
-        gain.gain.setValueAtTime(0.08, ctx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 1.2);
-        osc.start();
-        osc.stop(ctx.currentTime + 1.2);
-      } else {
-        // Regular beep
-        osc.type = "sine";
-        // Higher pitch if distressed/fast
-        const freq = isFast ? 950 : 800;
-        const duration = isFast ? 0.08 : 0.15;
-        const volume = isFast ? 0.08 : 0.05;
-
-        osc.frequency.setValueAtTime(freq, ctx.currentTime);
-        gain.gain.setValueAtTime(volume, ctx.currentTime);
-        // Quick ramp down
-        gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + duration);
-
-        osc.start();
-        osc.stop(ctx.currentTime + duration);
-      }
-    } catch (e) {
-      console.warn("Failed to play heart beep:", e);
-    }
+    // Muted to remove annoying repeating beeps
   },
 
   // Tool pickup metallic clink
   playToolPickup() {
-    try {
-      const ctx = getAudioContext();
-      const now = ctx.currentTime;
-
-      // Create multiple high-frequency sine oscillators for metallic ring
-      const frequencies = [880, 1200, 1750, 2200];
-      const gains = [0.03, 0.02, 0.015, 0.01];
-
-      frequencies.forEach((freq, idx) => {
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-
-        osc.type = "sine";
-        osc.frequency.setValueAtTime(freq, now);
-        // Slight frequency slide to simulate metallic collision
-        osc.frequency.exponentialRampToValueAtTime(freq * 0.9, now + 0.15);
-
-        gain.gain.setValueAtTime(gains[idx], now);
-        gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.18);
-
-        osc.connect(gain);
-        gain.connect(ctx.destination);
-
-        osc.start();
-        osc.stop(now + 0.18);
-      });
-    } catch (e) {
-      console.warn("Failed to play tool pickup:", e);
-    }
+    // Muted to remove annoying tool pickup/drop sound clicks
   },
 
   // Correct fix / incision seal sound
