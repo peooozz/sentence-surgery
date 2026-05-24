@@ -39,7 +39,7 @@ export async function speakText(text, { onStart, onEnd } = {}) {
     try {
       onStart?.();
       const response = await fetch(
-        `https://api.elevenlabs.io/v1/text-to-speech/${VOICE_ID}/stream`,
+        `/api-elevenlabs/v1/text-to-speech/${VOICE_ID}/stream`,
         {
           method: 'POST',
           headers: {

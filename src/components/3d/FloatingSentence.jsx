@@ -1,6 +1,6 @@
 import React, { useState, useRef, useMemo } from "react";
 import { useFrame } from "@react-three/fiber";
-import { Text, Line } from "@react-three/drei";
+import { Text, Line, RoundedBox, Edges } from "@react-three/drei";
 import * as THREE from "three";
 import { useGame } from "../GameProvider";
 
@@ -288,7 +288,15 @@ export default function FloatingSentence({
         let emissiveColor = "#475569";    
         let glowIntensity = 0.2;
 
-        if (word.isFixed) {
+        if (isClampedSelected) {
+          blockColor = "#dcfce7";
+          emissiveColor = "#22c55e";
+          glowIntensity = 1.8;
+        } else if (isForcepsSelected) {
+          blockColor = "#ffedd5";
+          emissiveColor = "#f59e0b";
+          glowIntensity = 1.8;
+        } else if (word.isFixed) {
           blockColor = "#dcfce7";         
           emissiveColor = "#22c55e";      
           glowIntensity = 0.8;
@@ -301,8 +309,8 @@ export default function FloatingSentence({
             blockColor = "#e0f2fe";
             emissiveColor = "#0ea5e9";
           } else if (word.errorType === "agreement") {
-            blockColor = "#dcfce7";
-            emissiveColor = "#22c55e";
+            blockColor = "#ffedd5";
+            emissiveColor = "#f97316";
           } else if (word.errorType === "apostrophe") {
             blockColor = "#fae8ff";
             emissiveColor = "#d946ef";
@@ -320,25 +328,29 @@ export default function FloatingSentence({
             emissiveColor = "#ef4444";
           }
           glowIntensity = 0.9;
-        } else if (isForcepsSelected) {
-          emissiveColor = "#f59e0b";      
-          glowIntensity = 1.5;
-        } else if (isClampedSelected) {
-          emissiveColor = "#22c55e";      
-          glowIntensity = 1.5;
         }
 
         return (
           <group key={word.id} position={[xPos, 0, 0]}>
             {/* Comic Outline Mesh */}
-            <mesh position={[0, 0, 0]} scale={isHovered ? [1.13, 1.13, 1.13] : [1.06, 1.06, 1.06]}>
-              <boxGeometry args={[blockWidth, blockHeight, blockDepth]} />
+            <RoundedBox 
+              position={[0, 0, 0]} 
+              args={[blockWidth, blockHeight, blockDepth]}
+              radius={0.06 * scale}
+              smoothness={4}
+              raycast={() => null}
+              scale={isForcepsSelected || isClampedSelected ? [1.2, 1.2, 1.2] : (isHovered ? [1.13, 1.13, 1.13] : [1.06, 1.06, 1.06])}
+            >
               <meshBasicMaterial color="#000000" side={THREE.BackSide} />
-            </mesh>
+            </RoundedBox>
 
             {/* 3D Word Block */}
-            <mesh 
-              scale={isHovered ? 1.06 : 1.0}
+            <RoundedBox 
+              position={[0, 0, 0]} 
+              args={[blockWidth, blockHeight, blockDepth]}
+              radius={0.06 * scale}
+              smoothness={4}
+              scale={isForcepsSelected || isClampedSelected ? 1.12 : (isHovered ? 1.06 : 1.0)}
               onPointerOver={(e) => {
                 e.stopPropagation();
                 setHoveredIdx(idx);
@@ -352,15 +364,29 @@ export default function FloatingSentence({
                 handleWordClick(idx, word);
               }}
             >
-              <boxGeometry args={[blockWidth, blockHeight, blockDepth]} />
               <meshStandardMaterial 
                 color={blockColor} 
-                roughness={0.2} 
-                metalness={0.1} 
+                roughness={0.15} 
+                metalness={0.05} 
                 emissive={emissiveColor}
                 emissiveIntensity={glowIntensity}
               />
-            </mesh>
+              {/* Premium clean outline overlay for active errors */}
+              {word.errorActive && (
+                <Edges 
+                  color={
+                    word.errorType === "punctuation" ? "#ef4444" : 
+                    word.errorType === "tense" ? "#0ea5e9" :
+                    word.errorType === "agreement" ? "#f97316" :
+                    word.errorType === "apostrophe" ? "#d946ef" :
+                    word.errorType === "comma" ? "#ec4899" :
+                    word.errorType === "spelling" ? "#8b5cf6" :
+                    word.errorType === "pronoun" ? "#eab308" : "#ef4444"
+                  } 
+                  thickness={3} 
+                />
+              )}
+            </RoundedBox>
 
             {/* Word Text */}
             <Text
@@ -373,27 +399,6 @@ export default function FloatingSentence({
             >
               {word.currentText}
             </Text>
-
-            {/* Error wireframe overlay */}
-            {word.errorActive && (
-              <mesh position={[0, 0, 0]} scale={1.05}>
-                <boxGeometry args={[blockWidth + 0.04 * scale, blockHeight + 0.04 * scale, blockDepth + 0.01 * scale]} />
-                <meshBasicMaterial 
-                  color={
-                    word.errorType === "punctuation" ? "#ef4444" : 
-                    word.errorType === "tense" ? "#0ea5e9" :
-                    word.errorType === "agreement" ? "#22c55e" :
-                    word.errorType === "apostrophe" ? "#d946ef" :
-                    word.errorType === "comma" ? "#ec4899" :
-                    word.errorType === "spelling" ? "#8b5cf6" :
-                    word.errorType === "pronoun" ? "#eab308" : "#ef4444"
-                  } 
-                  wireframe={true} 
-                  transparent={true} 
-                  opacity={0.5} 
-                />
-              </mesh>
-            )}
 
             {/* Healed glow ring */}
             {word.isFixed && (
